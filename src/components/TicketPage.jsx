@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import TicketCard from './Todo'; // Renamed from Todo
+import TicketCard from './TicketCard'; // Renamed from Todo
 import axios from 'axios';
-import '../style/Todos.css'
+import '../style/TicketPage.css'
 
 const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteria }) => {
   const [ticketData, setTicketData] = useState({ tickets: [], users: [] });

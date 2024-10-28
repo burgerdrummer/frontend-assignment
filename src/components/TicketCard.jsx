@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/Todo.css'
+import '../style/TicketCard.css'
 import { 
   Signal, 
   AlertTriangle,
