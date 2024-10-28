@@ -7,7 +7,7 @@ import {
   Plus,
   Circle,
   Loader,
-  ListMinus
+  ListMinus,
 } from 'lucide-react';
 
 const images = [
@@ -24,44 +24,54 @@ const images = [
     "https://images.unsplash.com/photo-1618193139062-2c5bf4f935b7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29uJTIwbG9nb3xlbnwwfHwwfHx8MA%3D%3D",
 ];
 
-const ICONS = {
-  status: {
-    'Todo': <Circle size={16} />,
-    'In progress': <Loader size={16} />,
-    'Backlog': <ListMinus size={16} />
-  },
-  priority: {
-    0: <MoreHorizontal size={16} />,
-    1: <Signal size={16} />,
-    2: <Signal size={16} style={{ fill: 'orange' }} />,
-    3: <Signal size={16} style={{ fill: 'yellow' }} />,
-    4: <AlertTriangle size={16} color="red" />
-  }
-};
-
-const PRIORITY_LABELS = {
-  0: 'No priority',
-  1: 'Low',
-  2: 'Medium',
-  3: 'High',
-  4: 'Urgent'
-};
-
 const TicketCard = ({ tickets, assignee, priorityLevel, viewType, status, checkUserStatus }) => {
-  // Function to get image based on userId or index
   const getImageForUser = (userId) => {
-    // Convert userId to a number and use modulo to cycle through images
     const index = typeof userId === 'string' 
       ? parseInt(userId.replace(/\D/g, ''), 10) 
       : userId;
     return images[index % images.length];
   };
 
-  const renderStatusIcon = (state) => (
-    <span className="status-icon">
-      {ICONS.status[state] || ICONS.status['Todo']}
-    </span>
-  );
+  console.log("yess")
+
+  const ICONS = {
+    status: {
+      'Todo': <Circle size={16} />,                    // Fixed spelling
+      'In progress': <Loader size={16} />,             // Consistent capitalization
+      'Backlog': <ListMinus size={16} />,                // these are just the keys which are same as the status which would come from data form backend
+    },
+    priority: {
+      0: <MoreHorizontal size={16} />,
+      1: <AlertTriangle size={16} color="red" />,
+      2: <Signal size={16} className="fill-orange-500" />,
+      3: <Signal size={16} className="fill-yellow-500" />,
+      4: <Signal size={16} />
+    }
+  };
+
+  const PRIORITY_LABELS = {
+    0: 'No priority',
+    1: 'Urgent',
+    2: 'High',
+    3: 'Medium',
+    4: 'Low'
+  };
+
+  const renderStatusIcon = (state) => {
+    // Add debug logging
+    console.log('Rendering status icon for:', state);
+    console.log('Available statuses:', Object.keys(ICONS.status));
+    
+    // Normalize the status to match our keys
+    const normalizedState = state?.trim();
+    console.log(state)
+    
+    return (
+      <span className="status-icon">
+        {ICONS.status[normalizedState] || ICONS.status['Todo']}
+      </span>
+    );
+  };
 
   const renderGroupHeader = () => {
     switch(viewType) {
@@ -69,7 +79,7 @@ const TicketCard = ({ tickets, assignee, priorityLevel, viewType, status, checkU
         return (
           <div className="group-header-content">
             {renderStatusIcon(status)}
-            <span>{status}</span>
+            <span>{status}</span> {/* Removed the & */}
           </div>
         );
       case 'priority':
@@ -96,6 +106,7 @@ const TicketCard = ({ tickets, assignee, priorityLevel, viewType, status, checkU
         );
     }
   };
+
 
   const renderTicket = (ticket) => {
     const userAvailable = checkUserStatus(ticket.userId);
@@ -156,5 +167,6 @@ const TicketCard = ({ tickets, assignee, priorityLevel, viewType, status, checkU
     </div>
   );
 };
+
 
 export default TicketCard;

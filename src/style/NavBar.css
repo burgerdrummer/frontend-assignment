@@ -1,7 +1,9 @@
 .nav-container {
     display: flex;
-    padding: 16px;
-    background-color: #f7f8fc;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 30px;
+    background-color: white;
     font-family: 'Roboto', sans-serif;
   }
   

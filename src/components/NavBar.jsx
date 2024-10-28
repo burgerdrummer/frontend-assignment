@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import '../style/NavBar.css'
 const NavigationMenu = ({ setSelectedGrouping, sortBy, setSortBy }) => {  // Fixed prop names to match parent component
-  const currentGrouping = localStorage.getItem('viewPreference') || 'user';
-  const currentOrdering = localStorage.getItem('viewOrdering') || 'priority';
+  const currentGrouping = localStorage.getItem('viewPreference') || 'status';
   const [menuOpen, setMenuOpen] = useState(false);
   const [groupingOpen, setGroupingOpen] = useState(false);
   const [sortingOpen, setSortingOpen] = useState(false);
@@ -69,7 +68,7 @@ const NavigationMenu = ({ setSelectedGrouping, sortBy, setSortBy }) => {  // Fix
               <div 
                 className="select-trigger"
                 onClick={(e) => {
-                  e.stopPropagation();  // Prevent event bubbling
+                  e.preventDefault();  // Prevent event bubbling
                   setGroupingOpen(!groupingOpen);
                   setSortingOpen(false);
                 }}
@@ -84,7 +83,7 @@ const NavigationMenu = ({ setSelectedGrouping, sortBy, setSortBy }) => {  // Fix
                       key={option}
                       className="select-option"
                       onClick={(e) => {
-                        e.stopPropagation();  // Prevent event bubbling
+                        e.preventDefault();  // Prevent event bubbling
                         handleGroupingSelect(option);
                       }}
                     >

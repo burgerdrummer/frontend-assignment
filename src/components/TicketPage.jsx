@@ -14,7 +14,6 @@ const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteri
       setTicketData(response.data);
       console.log(response.data)
       const storedView = localStorage.getItem('viewPreference');
-      setviewPreference(storedView || 'assignee');
     } catch (error) {
       console.error('Failed to fetch ticket data:', error);
     }
@@ -68,6 +67,14 @@ const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteri
     };
 
     ticketData.tickets.forEach(ticket => {
+      // Normalize status when categorizing
+      const normalizedStatus = ticket.status;
+      
+      // Log status categorization
+      // console.log('Categorizing ticket:', ticket.id);
+      // console.log('Original status:', ticket.status);
+      // console.log('Normalized status:', normalizedStatus);
+
       // Categorize by assignee
       if (!categories.byAssignee[ticket.userId]) {
         categories.byAssignee[ticket.userId] = [];
@@ -75,10 +82,10 @@ const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteri
       categories.byAssignee[ticket.userId].push(ticket);
 
       // Categorize by status
-      if (!categories.byStatus[ticket.status]) {
-        categories.byStatus[ticket.status] = [];
+      if (!categories.byStatus[normalizedStatus]) {
+        categories.byStatus[normalizedStatus] = [];
       }
-      categories.byStatus[ticket.status].push(ticket);
+      categories.byStatus[normalizedStatus].push(ticket);
 
       // Categorize by priority
       if (!categories.byPriority[ticket.priority]) {
@@ -87,30 +94,37 @@ const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteri
       categories.byPriority[ticket.priority].push(ticket);
     });
 
+    console.log('Categorized tickets:', categories);
     return categories;
   };
+
+
 
   const renderTicketGroups = () => {
     const categories = categorizeTickets();
 
     switch (viewPreference) {
       case 'status':
-        return Object.entries(categories.byStatus).map(([status, tickets]) => (
-          <TicketCard
-            key={`status-${status}`}
-            status={status}
-            tickets={tickets}
-            viewType={viewPreference}
-            checkUserStatus={checkUserStatus}
-          />
-        ));
+        console.log('Rendering status groups:', Object.keys(categories.byStatus));
+        return Object.entries(categories.byStatus).map(([status, tickets]) => {
+          console.log('Rendering status group:', status, 'with', tickets.length, 'tickets');
+          return (
+            <TicketCard
+              key={`status-${status}`}
+              status={status}
+              tickets={organizeTickets(tickets)}
+              viewType="status"
+              checkUserStatus={checkUserStatus}
+            />
+          );
+        });
       case 'priority':
         return Object.entries(categories.byPriority).map(([priority, tickets]) => (
           <TicketCard
             key={`priority-${priority}`}
             priorityLevel={priority}
             tickets={tickets}
-            viewType={viewPreference}
+            viewType="priority"
             checkUserStatus={checkUserStatus}
           />
         ));
@@ -121,7 +135,7 @@ const TicketManager = ({ setviewPreference, orderingCriteria, setOrderingCriteri
             assignee={user}
             tickets={categories.byAssignee[user.id] || []}
             checkUserStatus={checkUserStatus}
-            viewType={viewPreference}
+            viewType="user"
           />
         ));
     }
