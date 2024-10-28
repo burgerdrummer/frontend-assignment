@@ -1,23 +1,19 @@
 import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
+import NavBar from './components/NavBar';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import TicketManager from './components/Todos';
 function App() {
+  const [selectedGrouping, setSelectedGrouping] = useState('user');
+  const[sortBy,setSortBy]=useState('priority');
+  console.log(sortBy)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+         <NavBar sortBy={sortBy} setSortBy={setSortBy} selectedGrouping={selectedGrouping} setSelectedGrouping={setSelectedGrouping}/>
+         <TicketManager sortBy={sortBy} setSortBy={setSortBy} selectedGrouping={selectedGrouping} setSelectedGrouping={setSelectedGrouping}/>
     </div>
   );
 }
